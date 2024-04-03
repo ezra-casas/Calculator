@@ -6,6 +6,7 @@ const buttons = document.querySelectorAll("button");
 
 
 let temp = [];
+let prevVal = 0;
 let total = [];
 
 // Event listeners
@@ -23,6 +24,7 @@ buttons.forEach(button => {
 allClear.addEventListener("click", () => {
   if(temp.length != 0){
     temp = [];
+    prevVal = 0;
     console.log(temp)
   }
   updateDisplay()
@@ -62,16 +64,24 @@ function deleteBtn(){
 
 function add(){
   console.log("add")
-  let sum = Number(temp.join(""))
-  console.log(sum)
+  prevVal += Number(temp.join(""))
   temp = []
   updateDisplay()
+  console.log(prevVal)
 }
 
 function subtract(){
   console.log("subtract");
+  prevVal -= Number(temp.join(""))
   temp = []
   updateDisplay()
+}
+
+function equal(){
+  console.log("equal")
+  let sum = prevVal + Number(temp.join(""))
+  displayNumber.textContent = String(sum)
+  console.log(sum)
 }
 
 function updateDisplay(){
@@ -91,6 +101,9 @@ function chooseOperation(operation){
       break;
     case "multiply":
       multiply();
+      break;
+    case "equal":
+      equal();
       break;
     default:
       break;
