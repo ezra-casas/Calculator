@@ -2,30 +2,52 @@ const allClear = document.getElementById("clear");
 const delBtn = document.querySelector("#delete");
 const displayNumber = document.querySelector(".display-number");
 const numbers = document.querySelectorAll(".numbers");
-const buttons = document.querySelectorAll("button");
+const operators = document.querySelectorAll("button");
+const equalBtn = document.querySelector("#equal")
 
-
-let temp = [];
+let temp = "";
 let prevVal = 0;
-let total = [];
+let currentVal = 0;
+let total = 0;
+let decimalClicked = false;
+
+let flags = {
+  "add": false,
+  "subtract": false,
+  "divide": false,
+  "multiply": false,
+}
+
 
 // Event listeners
-delBtn.addEventListener("click", () => deleteBtn())
+delBtn.addEventListener("click", () => deleteBtn());
 
-buttons.forEach(button => {
-  let operation = button.dataset.operation
+equalBtn.addEventListener("click", () => equal());
+
+// Operators
+operators.forEach(operator => {
+  let operation = operator.dataset.operation
   if(operation != undefined){
-    button.addEventListener("click", () => {
-      chooseOperation(operation)
+    operator.addEventListener("click", () => {
+      for(let key in flags){
+        flags[key] = false;
+      }
+      flags[operation] = true;
+      prevVal = Number(temp);
+      temp = "";
+
+      updateDisplay();
+
     })
-  }
-})
+  }  
+});
 
 allClear.addEventListener("click", () => {
   if(temp.length != 0){
-    temp = [];
+    temp = "";
+    currentVal = 0;
     prevVal = 0;
-    console.log(temp)
+    decimalClicked = false;
   }
   updateDisplay()
 });
@@ -33,65 +55,82 @@ allClear.addEventListener("click", () => {
 // Number Button logic
 numbers.forEach(number => {
   number.addEventListener("click", () => {
-    temp.push(number.textContent)
+    // temp.push(number.textContent)
     if(number.textContent === "."){
-      // This makes it so there's a 0 at the start after immediately pressing the period
-      if(temp[0] === "."){
-        temp.unshift("0");
-      }
+      if(decimalClicked === false){
+        decimalClicked = true;
+        temp += number.textContent;
+      }else{}
     }else{
-      console.log(temp)
+      temp += number.textContent;
     }
     updateDisplay()
   })
-})
+});
 
 // Functions
 
-function divide(){
-  console.log("divide");
-  temp = [];
-  updateDisplay();
-}
-
-
 function deleteBtn(){
-  temp.splice(temp.length - 1);
-  console.log("delete")
+  let split = temp.split("")
+  split.pop();
+  temp = split.join("");
   updateDisplay();
-}
+};
 
 
-function add(){
-  console.log("add")
-  prevVal += Number(temp.join(""))
-  temp = []
-  updateDisplay()
-  console.log(prevVal)
-}
+function divide(){
+  total = prevVal / Number(temp);
+  temp = String(total);
+
+  updateDisplay();
+};
+
+function multiply(){
+  total = prevVal * Number(temp);
+  temp = String(total);
+
+  updateDisplay();
+
+};
 
 function subtract(){
-  console.log("subtract");
-  prevVal -= Number(temp.join(""))
-  temp = []
-  updateDisplay()
-}
+  total = prevVal - Number(temp);
+  temp = String(total);
+
+  updateDisplay();
+};
+
+function add() {
+  total = prevVal + Number(temp)
+  temp = String(total);
+
+  updateDisplay();
+};
 
 function equal(){
-  console.log("equal")
-  let sum = prevVal + Number(temp.join(""))
-  displayNumber.textContent = String(sum)
-  console.log(sum)
-}
+  for(let key in flags){
+    if(flags[key]){
+      chooseOperation(key);
+    }
+  }
+  total = Number(temp); 
+  console.log(total)
+};
 
 function updateDisplay(){
-  displayNumber.textContent = temp.join("")
-}
+  if(temp.split("").length != 0){
+    displayNumber.value = temp
+  }else{
+    displayNumber.value = "0"
+  }
+};
+
+
 
 function chooseOperation(operation){
   switch (operation) {
     case "add":
-      add()
+      add();
       break;
     case "subtract":
       subtract()
@@ -101,9 +140,6 @@ function chooseOperation(operation){
       break;
     case "multiply":
       multiply();
-      break;
-    case "equal":
-      equal();
       break;
     default:
       break;
