@@ -10,6 +10,7 @@ let prevVal = 0;
 let currentVal = 0;
 let total = 0;
 let decimalClicked = false;
+let numsClicked = false;
 
 let flags = {
   "add": false,
@@ -32,6 +33,7 @@ operators.forEach(operator => {
       for(let key in flags){
         flags[key] = false;
       }
+      
       flags[operation] = true;
       prevVal = Number(temp);
       temp = "";
@@ -55,7 +57,7 @@ allClear.addEventListener("click", () => {
 // Number Button logic
 numbers.forEach(number => {
   number.addEventListener("click", () => {
-    // temp.push(number.textContent)
+    numsClicked = true;
     if(number.textContent === "."){
       if(decimalClicked === false){
         decimalClicked = true;
@@ -114,7 +116,6 @@ function equal(){
     }
   }
   total = Number(temp); 
-  console.log(total)
 };
 
 function updateDisplay(){
