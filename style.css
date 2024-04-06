@@ -13,6 +13,15 @@ body {
   align-items: center;
   
 }
+.operator{
+  background-color: #C0423F;
+  color: white;
+}
+.numbers{
+  background-color: #3FBDC0;
+  
+  color: black;
+}
 
 .display-number{
   pointer-events: none;
